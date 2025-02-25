@@ -15,8 +15,13 @@ Aqui, o número de menor intensidade (que é '0') representa regiões pretas na 
 
 Usando a estrutura PyTorch, essa imagem ou matriz bidimensional pode ser convertida em um tensor bidimensional.
 
-No tutorial anterior, aprendemos sobre tensores unidimensionais no PyTorch ([One-Dimensional Tensors in Pytorch](https://github.com/ubiratantavares/machine_learning_mastery/blob/main/deep_learning_with_pytorch/md/one_dimensional_tensors_in_pytorch.md) - script01.py
-) e aplicamos algumas operações de tensores úteis. 
+No tutorial anterior, aprendemos sobre tensores unidimensionais no PyTorch:
+
+[One-Dimensional Tensors in Pytorch](https://github.com/ubiratantavares/machine_learning_mastery/blob/main/deep_learning_with_pytorch/md/one_dimensional_tensors_in_pytorch.md)
+
+[script01.py](https://github.com/ubiratantavares/machine_learning_mastery/blob/main/deep_learning_with_pytorch/py/script01.py)
+
+onde aplicamos algumas operações de tensores úteis. 
 
 Neste tutorial, aplicaremos essas operações a tensores bidimensionais usando a biblioteca PyTorch. 
 
@@ -205,6 +210,8 @@ A_mult_B = torch.mm(A, B)
 print("multiplying A with B: ", A_mult_B)
 print("\n")
 ```
+
+[script02.py](https://github.com/ubiratantavares/machine_learning_mastery/blob/main/deep_learning_with_pytorch/py/script02.py)
 
 ## Leitura Adicional
 
