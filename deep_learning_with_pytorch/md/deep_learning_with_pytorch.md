@@ -2,15 +2,14 @@
 
 ## One-Dimensional Tensors in Pytorch
 
-[[one_dimensional_tensors_in_pytorch]] - script01.py
+[One-Dimensional Tensors in Pytorch](https://github.com/ubiratantavares/machine_learning_mastery/blob/main/deep_learning_with_pytorch/md/two_dimensional_tensors_in_pytorch.md) - script01.py
 
 ## Two-Dimensional Tensors in Pytorch
 
-[[two_dimensional_tensors_in_pytorch]] - script02.py
+[Two-Dimensional Tensors in Pytorch](https://github.com/ubiratantavares/machine_learning_mastery/blob/main/deep_learning_with_pytorch/md/two_dimensional_tensors_in_pytorch.md) - script02.py
 
 ## Calculating Derivatives in PyTorch
 
-[[calculating_tensors_in_pytorch]] - script03.py
 
 ## Using Dataset Classes in PyTorch
 

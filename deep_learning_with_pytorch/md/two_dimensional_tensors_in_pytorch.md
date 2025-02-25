@@ -15,7 +15,8 @@ Aqui, o número de menor intensidade (que é '0') representa regiões pretas na 
 
 Usando a estrutura PyTorch, essa imagem ou matriz bidimensional pode ser convertida em um tensor bidimensional.
 
-No tutorial anterior, aprendemos sobre tensores unidimensionais no PyTorch ([[one_dimensional_tensors_in_pytorch]] - script01.py) e aplicamos algumas operações de tensores úteis. 
+No tutorial anterior, aprendemos sobre tensores unidimensionais no PyTorch ([One-Dimensional Tensors in Pytorch](https://github.com/ubiratantavares/machine_learning_mastery/blob/main/deep_learning_with_pytorch/md/two_dimensional_tensors_in_pytorch.md) - script01.py
+) e aplicamos algumas operações de tensores úteis. 
 
 Neste tutorial, aplicaremos essas operações a tensores bidimensionais usando a biblioteca PyTorch. 
 
