@@ -2,7 +2,7 @@
 
 ## One-Dimensional Tensors in Pytorch
 
-[One-Dimensional Tensors in Pytorch](https://github.com/ubiratantavares/machine_learning_mastery/blob/main/deep_learning_with_pytorch/md/two_dimensional_tensors_in_pytorch.md) - script01.py
+[One-Dimensional Tensors in Pytorch](https://github.com/ubiratantavares/machine_learning_mastery/blob/main/deep_learning_with_pytorch/md/one_dimensional_tensors_in_pytorch.md) - script01.py
 
 ## Two-Dimensional Tensors in Pytorch
 
