@@ -1,0 +1,102 @@
+# gradient descent optimization with nadam for a two-dimensional test function
+import logging
+import colorama
+from colorama import Fore
+
+from math import sqrt
+from numpy import asarray
+from numpy.random import rand
+from numpy.random import seed
+
+def loggingdecorator(name):
+    logger = logging.getLogger(name)
+    def _decor(fn):
+        function_name = fn.__name__
+        def _fn(*args, **kwargs):
+            ret = fn(*args, **kwargs)
+            argstr = [str(x) for x in args]
+            argstr += [key+"="+str(val) for key,val in kwargs.items()]
+            logger.debug("%s(%s) -> %s", function_name, ", ".join(argstr), ret)
+            return ret
+        return _fn
+    return _decor
+
+# objective function
+@loggingdecorator("nadam.function")
+def objective(x, y):
+    return x**2.0 + y**2.0
+
+# derivative of objective function
+@loggingdecorator("nadam.function")
+def derivative(x, y):
+    return asarray([x * 2.0, y * 2.0])
+
+# gradient descent algorithm with nadam
+def nadam(objective, derivative, bounds, n_iter, alpha, mu, nu, eps=1e-8):
+    logger = logging.getLogger("nadam")
+    # generate an initial point
+    x = bounds[:, 0] + rand(len(bounds)) * (bounds[:, 1] - bounds[:, 0])
+    score = objective(x[0], x[1])
+    # initialize decaying moving averages
+    m = [0.0 for _ in range(bounds.shape[0])]
+    n = [0.0 for _ in range(bounds.shape[0])]
+    # run the gradient descent
+    for t in range(n_iter):
+        iterlogger = logging.getLogger("nadam.iter")
+        # calculate gradient g(t)
+        g = derivative(x[0], x[1])
+        # build a solution one variable at a time
+        for i in range(bounds.shape[0]):
+            # m(t) = mu * m(t-1) + (1 - mu) * g(t)
+            m[i] = mu * m[i] + (1.0 - mu) * g[i]
+            # n(t) = nu * n(t-1) + (1 - nu) * g(t)^2
+            n[i] = nu * n[i] + (1.0 - nu) * g[i]**2
+            # mhat = (mu * m(t) / (1 - mu)) + ((1 - mu) * g(t) / (1 - mu))
+            mhat = (mu * m[i] / (1.0 - mu)) + ((1 - mu) * g[i] / (1.0 - mu))
+            # nhat = nu * n(t) / (1 - nu)
+            nhat = nu * n[i] / (1.0 - nu)
+            # x(t) = x(t-1) - alpha / (sqrt(nhat) + eps) * mhat
+            x[i] = x[i] - alpha / (sqrt(nhat) + eps) * mhat
+            iterlogger.info("Iteration %d variable %d: mhat=%f nhat=%f",
+                            t, i, mhat, nhat)
+        # evaluate candidate point
+        score = objective(x[0], x[1])
+        # report progress
+        logger.warning('>%d f(%s) = %.5f' % (t, x, score))
+    return [x, score]
+
+# Prepare the colored formatter
+colorama.init(autoreset = True)
+colors = {"DEBUG":Fore.BLUE, "INFO":Fore.CYAN,
+          "WARNING":Fore.YELLOW, "ERROR":Fore.RED, "CRITICAL":Fore.MAGENTA}
+class ColoredFormatter(logging.Formatter):
+    def format(self, record):
+        msg = logging.Formatter.format(self, record)
+        if record.levelname in colors:
+            msg = colors[record.levelname] + msg + Fore.RESET
+        return msg
+
+# Create logger and assign handler
+logger = logging.getLogger("nadam")
+handler  = logging.StreamHandler()
+handler.setFormatter(ColoredFormatter("%(asctime)s|%(levelname)s|%(name)s|%(message)s"))
+logger.addHandler(handler)
+logger.setLevel(logging.DEBUG)
+logger = logging.getLogger("nadam.iter")
+logger.setLevel(logging.DEBUG)
+# seed the pseudo random number generator
+seed(1)
+# define range for input
+bounds = asarray([[-1.0, 1.0], [-1.0, 1.0]])
+# define the total iterations
+n_iter = 50
+# steps size
+alpha = 0.02
+# factor for average gradient
+mu = 0.8
+# factor for average squared gradient
+nu = 0.999
+# perform the gradient descent search with nadam
+best, score = nadam(objective, derivative, bounds, n_iter, alpha, mu, nu)
+print('Done!')
+print('f(%s) = %f' % (best, score))

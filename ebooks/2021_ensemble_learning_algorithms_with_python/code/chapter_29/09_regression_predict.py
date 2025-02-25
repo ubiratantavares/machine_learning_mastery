@@ -1,0 +1,75 @@
+# example of making a prediction with a blending ensemble for regression
+from numpy import hstack
+from sklearn.datasets import make_regression
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.svm import SVR
+
+# get the dataset
+def get_dataset():
+	X, y = make_regression(n_samples=10000, n_features=20, n_informative=10, noise=0.3, random_state=7)
+	return X, y
+
+# get a list of base models
+def get_models():
+	models = list()
+	models.append(('lr', LinearRegression()))
+	models.append(('knn', KNeighborsRegressor()))
+	models.append(('cart', DecisionTreeRegressor()))
+	models.append(('svm', SVR()))
+	return models
+
+# fit the blending ensemble
+def fit_ensemble(models, X_train, X_val, y_train, y_val):
+	# fit all models on the training set and predict on hold out set
+	meta_X = list()
+	for _, model in models:
+		# fit in training set
+		model.fit(X_train, y_train)
+		# predict on hold out set
+		yhat = model.predict(X_val)
+		# reshape predictions into a matrix with one column
+		yhat = yhat.reshape(len(yhat), 1)
+		# store predictions as input for blending
+		meta_X.append(yhat)
+	# create 2d array from predictions, each set is an input feature
+	meta_X = hstack(meta_X)
+	# define blending model
+	blender = LinearRegression()
+	# fit on predictions from base models
+	blender.fit(meta_X, y_val)
+	return blender
+
+# make a prediction with the blending ensemble
+def predict_ensemble(models, blender, X_test):
+	# make predictions with base models
+	meta_X = list()
+	for _, model in models:
+		# predict with base model
+		yhat = model.predict(X_test)
+		# reshape predictions into a matrix with one column
+		yhat = yhat.reshape(len(yhat), 1)
+		# store prediction
+		meta_X.append(yhat)
+	# create 2d array from predictions, each set is an input feature
+	meta_X = hstack(meta_X)
+	# predict
+	return blender.predict(meta_X)
+
+# define dataset
+X, y = get_dataset()
+# split dataset set into train and validation sets
+X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.33, random_state=1)
+# summarize data split
+print('Train: %s, Val: %s' % (X_train.shape, X_val.shape))
+# create the base models
+models = get_models()
+# train the blending ensemble
+blender = fit_ensemble(models, X_train, X_val, y_train, y_val)
+# make a prediction on a new row of data
+row = [-0.24038754, 0.55423865, -0.48979221, 1.56074459, -1.16007611, 1.10049103, 1.18385406, -1.57344162, 0.97862519, -0.03166643, 1.77099821, 1.98645499, 0.86780193, 2.01534177, 2.51509494, -1.04609004, -0.19428148, -0.05967386, -2.67168985, 1.07182911]
+yhat = predict_ensemble(models, blender, [row])
+# summarize prediction
+print('Predicted: %.3f' % (yhat[0]))
